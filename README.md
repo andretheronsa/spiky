@@ -4,10 +4,10 @@
 Application that removes spikes from GeoPackage polygon files.
 
 ## Docs
-Docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/latest/?)
+Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/latest/?)
 
-## Docker image
-The Docker image is available at: [Dockerhub](https://hub.docker.com/repository/docker/andretheronsa/spiky)
+## Docker
+The latest Docker image is available at: [Dockerhub](https://hub.docker.com/repository/docker/andretheronsa/spiky)
 
 Pull image with:
 
