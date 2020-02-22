@@ -1,1 +1,1 @@
-"""Application that removes spikes from GeoPackage polygon files."""
+"""Package with tools to remove GeoPackage polygon files."""

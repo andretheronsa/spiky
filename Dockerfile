@@ -5,4 +5,7 @@ LABEL \
     "Email"="andretheronsa@gmail.com"
 
 COPY requirements.txt requirements.txt
-RUN python3 -m pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt && \
+    rm requirements.txt
+
+COPY ./tests/data/spiky-polygons.gpkg /home/
