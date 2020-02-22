@@ -3,6 +3,9 @@
 ![Tests](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
 
 # Spiky
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/689f88a473764cd888550434c908644a)](https://app.codacy.com/manual/andretheronsa/spiky?utm_source=github.com&utm_medium=referral&utm_content=andretheronsa/spiky&utm_campaign=Badge_Grade_Dashboard)
+
 Application that removes spikes from GeoPackage polygon files.
 
 ## Docs
