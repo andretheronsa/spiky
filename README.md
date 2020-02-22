@@ -13,4 +13,5 @@ Pull image with:
 docker pull andretheronsa/spiky
 ```
 ## Tests
-Pytest status with Github actions: ![Python package](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
+Pytest status using Github actions: 
+![Python package](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
