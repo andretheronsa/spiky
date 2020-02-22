@@ -1,4 +1,6 @@
-|build-status| |docs| ![Tests](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
+![build-status](https://img.shields.io/docker/pulls/mashape/kong.svg)
+![docs](https://readthedocs.org/projects/docs/badge/?version=latest)
+![Tests](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
 
 # Spiky
 Application that removes spikes from GeoPackage polygon files.
@@ -16,16 +18,3 @@ docker pull andretheronsa/spiky
 ```
 ## Tests
 Testing is done with Pytest using Github actions: 
-
-.. |build-status| image:: https://img.shields.io/docker/pulls/mashape/kong.svg
-    :alt: build status
-    :scale: 100%
-    :target: https://travis-ci.org/readthedocs/readthedocs.org
-
-
-.. |docs| image:: https://readthedocs.org/projects/docs/badge/?version=latest
-    :alt: Documentation Status
-    :scale: 100%
-    :target: https://spiky.readthedocs.io/en/latest/?badge=latest
-
-    
