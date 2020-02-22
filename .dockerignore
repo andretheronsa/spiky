@@ -1,0 +1,8 @@
+__pycache__/
+venv/
+.gitignore
+.vscode
+.pytest_cache
+.github
+README.md
+LICENCE
