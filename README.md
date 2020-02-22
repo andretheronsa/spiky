@@ -1,3 +1,5 @@
+![Python package](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
+
 # Spiky
 Application that removes spikes from GeoPackage polygon files.
 
@@ -13,5 +15,4 @@ Pull image with:
 docker pull andretheronsa/spiky
 ```
 ## Tests
-Pytest status using Github actions: 
-![Python package](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
+Testing is done with Pytest using Github actions: 
