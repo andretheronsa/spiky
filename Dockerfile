@@ -9,4 +9,6 @@ RUN python3 -m pip install -r requirements.txt && \
     rm requirements.txt
 
 COPY ./tests/data/spiky-polygons.gpkg /home/tests
-COPY spiky.py /home/app
+COPY spiky.py /home/app/spiky.py
+
+ENTRYPOINT ["/home/app/spiky.py" ]
