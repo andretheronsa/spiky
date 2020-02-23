@@ -55,10 +55,10 @@ docker run spiky:latest -v /home/user/input/:/home/input/
 
 ### Local Python environment
 
-Alternatively the tool can be downloaded and run with Python (3.5+)
-Required modules should be installed with pip
-It is highly reccomended to use Python Virtual environments (or similar tool) to avoid conflicts
-Pip install on Windows will fail due to missing wheels for Geopandas dependencies - [alternative]()
+Alternatively the tool can be downloaded and run with Python (3.5+).  
+Required modules should be installed with pip.  
+It is highly reccomended to use Python Virtual environments (or similar tool) to avoid conflicts.  
+Pip install on Windows will fail due to missing wheels for Geopandas dependencies - [alternative](https://geopandas.org/install.html).  
 
 1. Pull code from git
 ```shell
