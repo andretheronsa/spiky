@@ -15,7 +15,7 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 * A single outlier vertex between two vertices that forms an acute angle to them
 * A shape can have more than one spike
 * Spikes could be inward or outward
-* Spikes can be on exterior of one or more interior boundaries of a polygon  
+* Spikes can be on exterior and on one or more interior polygon boundaries
 * Geographical location and scale should not affect spike detection
 * Topology and geometry should be preserved - no simplifying
 
@@ -30,10 +30,6 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 * Does not consider geometries with dimensions higher than 2d (z, m)
 * Input must be in geographic coordinates referenced to WGS84
 
-### TODO
-
-* Enable Line, MultiLine, or MultiPolygon geometries
-
 ## Getting started
 
 ### Docker
@@ -46,7 +42,7 @@ The latest Docker image is available at: [Dockerhub](https://hub.docker.com/repo
 ```shell
 docker pull andretheronsa/spiky:latest
 ```
-2. Run program and mount directory with file as a volume: 
+2. Run program and mount directory with file as a volume to /home/work/: 
 ```shell
 docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 ```
@@ -83,6 +79,10 @@ python3 spiky.py /home/user/spiky-polygon.gpkg -a 1
 ## Tests
 
 Testing is done with Pytest and automated during master deploy using Github actions:
+
+### TODO
+
+* Enable Line, MultiLine, or MultiPolygon geometries
 
 ## Author
 
