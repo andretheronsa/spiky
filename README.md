@@ -42,7 +42,7 @@ The latest Docker image is available at: [Dockerhub](https://hub.docker.com/repo
 ```shell
 docker pull andretheronsa/spiky:latest
 ```
-2. Run program and mount directory with file as a volume to /home/work/: 
+2. Run program and mount directory with file as a volume to /home/work/:  
 ```shell
 docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 ```
