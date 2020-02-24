@@ -5,13 +5,13 @@
 
 # Spiky
 
-Spiky removes spikes from GeoPackage polygons
+Spiky removes spikes from GeoPackage shapes
 
 ## Overview
 
 ### Spike definition:
 * A single outlier vertex between two vertices that forms an acute angle to them
-* A polygon can have more than one spike
+* A shape can have more than one spike
 * Spikes could be inward or outward
 * Spikes can be on exterior of one or more interior boundaries of a polygon  
 * Geographical location and scale should not affect spike detection
@@ -25,7 +25,7 @@ Spiky removes spikes from GeoPackage polygons
 ![alt text](Isolated.png "Title")
 
 ### Limitations
-* Does not work with line, multiline, or multipolygon geometries
+* Does not yet work with line, multiline, or multipolygon geometries
 * Does not consider geometries with dimensions higher than 2d (z, m)
 * Input must be in geographic coordinates referenced to WGS84
 
