@@ -9,7 +9,7 @@ RUN python3 -m pip install -r requirements.txt && \
     rm requirements.txt
 
 COPY ./tests/data/ /home/tests/
-COPY ./spiky/spiky.py /home/app/spiky.py
+COPY ./spiky.py /home/app/spiky.py
 
 RUN mkdir /home/work
 WORKDIR /home/work

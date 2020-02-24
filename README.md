@@ -5,25 +5,27 @@
 
 # Spiky
 
-Program that removes spikes from GeoPackage polygons
+Spiky removes spikes from GeoPackage shapes
 
 ## Overview
 
 ### Spike definition:
 * A single outlier vertex between two vertices that forms an acute angle to them
-* A polygon can have more than one spike
+* A shape can have more than one spike
 * Spikes could be inward or outward
-* Spikes can be on exterior of one or more interior boundries of a polygon  
+* Spikes can be on exterior of one or more interior boundaries of a polygon  
 * Geographical location and scale should not affect spike detection
 * Topology and geometry should be preserved - no simplifying
 
 ### Operation:
 * Accepts a positional argument for filename
-* Optionally accepts a maxc spike angle parameter (-a: float)  
-* Writes out new file(s) (*_despike.gpkg) to same folder as input
+* Optionally accepts a max spike angle parameter (-a: float)  
+* Writes out new file(s) (*_ds.gpkg) to same folder as input
+
+![alt text](Isolated.png "Title")
 
 ### Limitations
-* Does not work with line, multiline, or multipolygon geometries
+* Does not yet work with line, multiline, or multipolygon geometries
 * Does not consider geometries with dimensions higher than 2d (z, m)
 * Input must be in geographic coordinates referenced to WGS84
 
@@ -49,29 +51,29 @@ docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 
 Alternatively the tool can be downloaded and run with Python (3.5+).  
 Required modules should be installed with pip.  
-It is highly reccomended to use Python Virtual environments (or similar tool) to avoid conflicts.  
+It is highly recommended to use Python Virtual environments (or similar tool) to avoid conflicts.  
 Pip install on Windows will fail due to missing wheels for Geopandas dependencies - [alternative](https://geopandas.org/install.html).  
 
-1. Pull code from git
+1. Pull code from git:
 ```shell
 git clone https://github.com/andretheronsa/spiky.git
 ```
-2. Enter folder and activate virtual environment (venv used in this case)
+2. Enter folder and activate virtual environment (venv used in this case):
 ```shell
 cd spiky/
 python -m venv venv
 ./venv/Scripts/active
 
 ```
-4. Install packages
+4. Install packages:
 ```shell
 python3 -m pip install -r requirements.txt
 ```
-5. Run program with arguments 
+5. Run program with arguments:
 ```shell
-python3 spiky.py /home/user/files -a 1
+python3 spiky.py /home/user/spiky-polygon.gpkg -a 1
 ```
-6. Outputs will be written to the same folder with '_despiked' appended.
+6. Outputs will be written to the same folder with '_ds' appended.
 
 ## Docs
 
@@ -84,7 +86,6 @@ Testing is done with Pytest and automated during master deploy using Github acti
 ## TODO
 
 * Enable line, multiline, or multipolygon geometries
-* Raise proper exceptions
 
 ## Author
 
