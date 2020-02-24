@@ -83,7 +83,7 @@ def despike_coords(coord_list: list,
                    angle: float) -> list:
     '''Removes spikes from a coord list.
 
-    Spikes are vertices with neighbouring angles < min.
+    Spikes are vertices with neighbouring angles < min.  
     Coordinates can be line or ring.
 
     Args:
@@ -124,10 +124,10 @@ def despike_coords(coord_list: list,
 def despike(shape: geometry, angle: float) -> geometry:
     '''Removes spikes from various shapely geometries.
 
-    Deconstructs shape's CoordSequences into lists.
-    Runs despike_list() on these and rebuilds the shape.
-    Currently supports only Polygons.
-    Line, MultiLine and Multipolygon are possible.
+    Deconstructs shape's CoordSequences into lists.  
+    Runs despike_list() on these and rebuilds the shape.  
+    Currently supports only Polygons.  
+    Line, MultiLine and Multipolygon are possible.  
 
     Args:
         shape: Input shapely geometry.
