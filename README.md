@@ -1,37 +1,30 @@
-![build-status](https://img.shields.io/docker/pulls/mashape/kong.svg)
-![docs](https://readthedocs.org/projects/docs/badge/?version=latest)
+[![Build](https://images.microbadger.com/badges/version/andretheronsa/spiky.svg)](https://microbadger.com/images/andretheronsa/spiky)
+![Docs](https://readthedocs.org/projects/docs/badge/?version=latest)
 ![Tests](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/689f88a473764cd888550434c908644a)](https://app.codacy.com/manual/andretheronsa/spiky?utm_source=github.com&utm_medium=referral&utm_content=andretheronsa/spiky&utm_campaign=Badge_Grade_Dashboard)
 
 # Spiky
 
-Program that removes spikes from a GeoPackage polygon
+Program that removes spikes from GeoPackage polygons
 
 ## Overview
 
 ### Spike definition:
 * A single outlier vertex between two vertices that forms an acute angle to them
-* Removing the outlier should not change the polygon area significantly
-
-### Notes:
-* A spike at the first vertex in a polygon is removed
 * A polygon can have more than one spike
 * Spikes could be inward or outward
-* Spikes can be on exterior of one or more interior boundries of the polygon
-* Geographical location should not affect spike detection (poles / equator)
+* Spikes can be on exterior of one or more interior boundries of a polygon  
+* Geographical location and scale should not affect spike detection
 * Topology and geometry should be preserved - no simplifying
 
 ### Operation:
-* Accepts input *.gpkg file containing one, or more geometries
-* Iteratively checks for spikes on polygon geometries by increasing the angle until the max angle is reached or the polygon area changes significantly
-* Optionally accepts 2 paramters:
-    - Max angle
-    - Max area delta
-* Writes out *_despike.gpkg file with spikes removed to same folder as input
+* Accepts a positional argument for filename
+* Optionally accepts an angle detection threshold parameter (-a: float)  
+* Writes out new file(s) (*_despike.gpkg) to same folder as input
 
 ### Limitations
-* Does not work with line data
-* Does not consider geometries with dimensions higher than 2d
+* Does not work with line, multiline, or multipolygon geometries
+* Does not consider geometries with dimensions higher than 2d (z, m)
 * Input must be in geographic coordinates referenced to WGS84
 
 ## Getting started
@@ -46,12 +39,11 @@ The latest Docker image is available at: [Dockerhub](https://hub.docker.com/repo
 ```shell
 docker pull andretheronsa/spiky:latest
 ```
-2. Run program by mapping folder containing '.dpkg' files to be despiked as volume to /home/work/:
+2. Run program and mount directory with file as a volume: 
 ```shell
-docker run spiky:latest -v /home/user/input/:/home/input/
+docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 ```
-
-3. Outputs will be written to the same folder with '_despiked' appended.
+3. Outputs will be written to the same folder with '_ds' appended. 
 
 ### Local Python environment
 
@@ -62,7 +54,7 @@ Pip install on Windows will fail due to missing wheels for Geopandas dependencie
 
 1. Pull code from git
 ```shell
-git clone 
+git clone https://github.com/andretheronsa/spiky.git
 ```
 2. Enter folder and activate virtual environment (venv used in this case)
 ```shell
@@ -75,9 +67,9 @@ python -m venv venv
 ```shell
 python3 -m pip install -r requirements.txt
 ```
-5. Run program with folder containing '.dpkg' files to be despiked
+5. Run program with arguments 
 ```shell
-python3 spiky.py /home/user/files
+python3 spiky.py /home/user/files -a 1
 ```
 6. Outputs will be written to the same folder with '_despiked' appended.
 
