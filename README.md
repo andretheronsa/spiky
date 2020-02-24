@@ -25,9 +25,12 @@ Spiky removes spikes from GeoPackage shapes
 ![alt text](Isolated.png "Title")
 
 ### Limitations
-* Does not yet work with line, multiline, or multipolygon geometries
 * Does not consider geometries with dimensions higher than 2d (z, m)
 * Input must be in geographic coordinates referenced to WGS84
+
+### TODO
+
+* Enable Line, MultiLine, or MultiPolygon geometries
 
 ## Getting started
 
@@ -82,10 +85,6 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 ## Tests
 
 Testing is done with Pytest and automated during master deploy using Github actions:
-
-## TODO
-
-* Enable line, multiline, or multipolygon geometries
 
 ## Author
 
