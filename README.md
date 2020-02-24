@@ -13,13 +13,13 @@ Program that removes spikes from GeoPackage polygons
 * A single outlier vertex between two vertices that forms an acute angle to them
 * A polygon can have more than one spike
 * Spikes could be inward or outward
-* Spikes can be on exterior of one or more interior boundries of a polygon
+* Spikes can be on exterior of one or more interior boundries of a polygon  
 * Geographical location and scale should not affect spike detection
 * Topology and geometry should be preserved - no simplifying
 
 ### Operation:
 * Accepts a positional argument for filename
-* Optionally accepts an angle detection threshold parameter (-a: float)
+* Optionally accepts an angle detection threshold parameter (-a: float)  
 * Writes out new file(s) (*_despike.gpkg) to same folder as input
 
 ### Limitations
@@ -39,11 +39,11 @@ The latest Docker image is available at: [Dockerhub](https://hub.docker.com/repo
 ```shell
 docker pull andretheronsa/spiky:latest
 ```
-2. Run program and mount directory with file as a volume:
+2. Run program and mount directory with file as a volume: 
 ```shell
 docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 ```
-3. Outputs will be written to the same folder with '_ds' appended.
+3. Outputs will be written to the same folder with '_ds' appended. 
 
 ### Local Python environment
 
@@ -67,7 +67,7 @@ python -m venv venv
 ```shell
 python3 -m pip install -r requirements.txt
 ```
-5. Run program with arguments
+5. Run program with arguments 
 ```shell
 python3 spiky.py /home/user/files -a 1
 ```

@@ -40,19 +40,18 @@ def calculate_angle(a: tuple,
                     b: tuple,
                     c: tuple) -> float:
     '''Calculate the absolute angle of point b with regards to
-    neighbouring points a and c.  
+    neighbouring points a and c.
 
-    Shapely points in WGS84 Geographic coordinates required.  
+    Shapely points in WGS84 Geographic coordinates required.
 
-    :param a: Neighbouring point a (xy tuple)  
-    :param b: Center point b (xy tuple)  
-    :param c: Neighbouring point c (xy tuple)  
-    :type a: tuple  
-    :type b: tuple  
-    :type c: tuple  
-    :return: Returns absolute angle  
-    :rtype: float  
-
+    :param a: Neighbouring point a (xy tuple)
+    :param b: Center point b (xy tuple)
+    :param c: Neighbouring point c (xy tuple)
+    :type a: tuple
+    :type b: tuple
+    :type c: tuple
+    :return: Returns absolute angle
+    :rtype: float
     '''
     heading_ab = gd(start_latitude=a[1],
                     start_longitude=a[0],
@@ -68,18 +67,17 @@ def calculate_angle(a: tuple,
 
 def despike_coords(coord_list: list,
                    angle: float) -> list:
-    '''Removes spikes from a coord list.  
+    '''Removes spikes from a coord list.
 
-    Spikes are vertices with neighbouring angles < min.  
-    Coordinates can be line or ring.  
+    Spikes are vertices with neighbouring angles < min.
+    Coordinates can be line or ring.
 
-    :param coord_list: Input list of xy tuples to be despiked  
-    :param angle: Maximum angle that defines a spike (deg)  
-    :type coord_list: list  
-    :type angle: float  
-    :return: Returns despiked coord list 
-    :rtype: list  
-
+    :param coord_list: Input list of xy tuples to be despiked
+    :param angle: Maximum angle that defines a spike (deg)
+    :type coord_list: list
+    :type angle: float
+    :return: Returns despiked coord list
+    :rtype: list
     '''
     # Check if coordlist is enclosing ring
     if coord_list[0] == coord_list[-1]:
@@ -108,18 +106,17 @@ def despike_coords(coord_list: list,
 
 
 def despike(shape: geometry, angle: float) -> geometry:
-    '''Removes spikes various shapely geometries using despike_coords().  
+    '''Removes spikes various shapely geometries using despike_coords().
 
-    Currently supports only Polygon geometries.  
-    Line, MultiLine and Multipolygon should be possible.  
+    Currently supports only Polygon geometries.
+    Line, MultiLine and Multipolygon should be possible.
 
-    :param shape: Input shapely geometry  
-    :param angle: Maximum angle that defines a spike (deg)  
-    :type shape: geometry  
-    :type angle: float  
-    :return: Returns despiked shape  
-    :rtype: geometry  
-
+    :param shape: Input shapely geometry
+    :param angle: Maximum angle that defines a spike (deg)
+    :type shape: geometry
+    :type angle: float
+    :return: Returns despiked shape
+    :rtype: geometry
     '''
     if shape.type == "Polygon":
         # Polygons have coords for exterior and list for interior(s)
@@ -152,7 +149,7 @@ def despike(shape: geometry, angle: float) -> geometry:
 
 
 def main(filename: str, angle: float):
-    '''Main function that handles file input and performs quality checks.  
+    '''Main function that handles file input and performs quality checks.
     Finds all shapes within GeoPackage, despikes and save to GeoPackages.
     '''
     package_path = Path(filename).absolute()
