@@ -9,6 +9,8 @@ Spiky removes spikes from GeoPackage shapes
 
 ## Overview
 
+Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/latest/?)
+
 ### Spike definition:
 * A single outlier vertex between two vertices that forms an acute angle to them
 * A shape can have more than one spike
@@ -77,10 +79,6 @@ python3 -m pip install -r requirements.txt
 python3 spiky.py /home/user/spiky-polygon.gpkg -a 1
 ```
 6. Outputs will be written to the same folder with '_ds' appended.
-
-## Docs
-
-Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/latest/?)
 
 ## Tests
 
