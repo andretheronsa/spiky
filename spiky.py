@@ -125,9 +125,9 @@ def despike(shape: geometry, angle: float) -> geometry:
     '''Removes spikes from various shapely geometries.
 
     Deconstructs shape's CoordSequences into lists,
-    Runs despike_list() on these and rebuilds the shape.
+    despikes the lists and rebuilds the shape.
 
-    Currently supports only Polygons but Line, MultiLine 
+    Currently supports only Polygons but Line, MultiLine
     and Multipolygon are possible.
 
     Args:
