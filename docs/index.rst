@@ -6,10 +6,12 @@
 Welcome to Spiky's documentation!
 =================================
 
+.. automodule:: spiky
+   :members:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-   spiky
 
 Indices and tables
 ==================
