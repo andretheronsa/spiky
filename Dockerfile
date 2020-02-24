@@ -8,7 +8,7 @@ COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt && \
     rm requirements.txt
 
-COPY ./tests/data/ /home/tests/
+COPY ./tests/integration/fixtures/ /home/tests/
 COPY ./spiky.py /home/app/spiky.py
 
 RUN mkdir /home/work

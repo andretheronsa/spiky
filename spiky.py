@@ -168,11 +168,6 @@ def despike(shape: geometry, angle: float) -> geometry:
     else:
         logging.warning(f"{shape.type} cannot be despiked yet - ignore")
         new_shape = shape
-
-    orig_area = shape.area
-    new_area = new_shape.area
-    area_delta = min(orig_area, new_area) / max(orig_area, new_area)
-    print(orig_area, new_area, area_delta)
     return new_shape
 
 
