@@ -53,8 +53,8 @@ def cmd_line_parse():
 def calculate_angle(a: tuple,
                     b: tuple,
                     c: tuple) -> float:
-    '''Calculates the absolute angle of point b with regards to
-    neighbouring points a and c.
+    '''Calculates the absolute geographic angle of point b
+    with regards to neighbouring points a and c.
 
     Points should be in WGS84 Geographic coordinates.
 
@@ -96,8 +96,9 @@ def despike_coords(coord_list: list,
     '''
     # Check if coordlist is enclosing ring - Pad initial point with end
     if coord_list[0] == coord_list[-1]:
-        ring = True
         coord_list.insert(0, coord_list[-2])
+        ring = True
+        logging.debug(f"Coordlist is ring")
 
     # Create list without spikes
     new_coord_list = []
@@ -108,6 +109,8 @@ def despike_coords(coord_list: list,
         b_angle = calculate_angle(point_a, point_b, point_c)
         if b_angle > angle:
             new_coord_list.append(point_b)
+        else:
+            logging.debug(f"Spike vertex detected: {point_b}")
 
     # Ensure ring encloses again - otherwise pad line ends
     if ring:
@@ -121,8 +124,10 @@ def despike_coords(coord_list: list,
 def despike(shape: geometry, angle: float) -> geometry:
     '''Removes spikes from various shapely geometries.
 
+    Deconstructs shape's CoordSequences into lists.
+    Runs despike_list() on these and rebuilds the shape.
     Currently supports only Polygons.
-    Line, MultiLine and Multipolygon should be possible.
+    Line, MultiLine and Multipolygon are possible.
 
     Args:
         shape: Input shapely geometry.
