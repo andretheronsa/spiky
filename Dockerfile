@@ -8,10 +8,8 @@ COPY requirements.txt requirements.txt
 RUN python3 -m pip install -r requirements.txt && \
     rm requirements.txt
 
-COPY ./tests/data/ /home/tests/
-COPY ./spiky.py /home/app/spiky.py
-
+COPY ./spiky/ /home/spiky/
 RUN mkdir /home/work
 WORKDIR /home/work
 
-ENTRYPOINT ["python", "/home/app/spiky.py"]
+ENTRYPOINT ["python", "/home/spiky/spiky.py"]
