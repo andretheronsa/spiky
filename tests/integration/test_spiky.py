@@ -1,7 +1,4 @@
-import pytest
-
-target = __import__("../../spiky")
-spiky = target.spiky
+from spiky import spiky
 
 
 def func(x):

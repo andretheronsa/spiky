@@ -1,7 +1,4 @@
-import spiky
-
-target = __import__("../../spiky")
-spiky = target.spiky
+from spiky import spiky
 
 
 def func(x):
@@ -9,4 +6,4 @@ def func(x):
 
 
 def test_answer():
-    assert func(3) == 5
+    assert func(3) == 4
