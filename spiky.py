@@ -15,6 +15,7 @@ Output:
 
 Example:
     $ spiky.py spiky-polygon.gpkg -a 1
+
 '''
 
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
@@ -197,7 +198,7 @@ def main(inputfile: Path, angle: float):
         raise ValueError("GeoPackage CRS not WGS84.")
 
     # Despike geometry column of geodataframe in place
-    logging.info(f"Despike with max angle: {angle} - infile: {inputfile.name}")
+    logging.info(f"Despike with angle: {angle} - inputfile: {inputfile.name}")
     package_gdf["geometry"] = package_gdf["geometry"].apply(lambda s:
                                                             despike(s, angle))
     outfile = inputfile.parent / (inputfile.stem + "_ds.gpkg")
