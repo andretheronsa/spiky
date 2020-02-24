@@ -19,7 +19,7 @@ Program that removes spikes from GeoPackage polygons
 
 ### Operation:
 * Accepts a positional argument for filename
-* Optionally accepts an angle detection threshold parameter (-a: float)  
+* Optionally accepts a maxc spike angle parameter (-a: float)  
 * Writes out new file(s) (*_despike.gpkg) to same folder as input
 
 ### Limitations
@@ -79,7 +79,12 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 
 ## Tests
 
-Testing is done with Pytest and automated during master deploy using Github actions: 
+Testing is done with Pytest and automated during master deploy using Github actions:
+
+## TODO
+
+* Enable line, multiline, or multipolygon geometries
+* Raise proper exceptions
 
 ## Author
 
