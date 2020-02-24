@@ -198,12 +198,12 @@ def main(inputfile: Path, angle: float):
         raise ValueError("GeoPackage CRS not WGS84.")
 
     # Despike geometry column of geodataframe in place
-    logging.info(f"Despike with angle: {angle} - inputfile: {inputfile.name}")
+    logging.info(f"Despike: {inputfile.name}")
     package_gdf["geometry"] = package_gdf["geometry"].apply(lambda s:
                                                             despike(s, angle))
     outfile = inputfile.parent / (inputfile.stem + "_ds.gpkg")
     package_gdf.to_file(outfile, driver="GPKG")
-    logging.info(f"Despike complete - outfile: {outfile.name}")
+    logging.info(f"Despiked file: {outfile.name}")
 
 
 if __name__ == "__main__":
