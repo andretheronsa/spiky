@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+
+import pytest
+
+target = __import__("spiky.py")
+spiky = target.spiky
+
 def func(x):
     return x + 1
 
