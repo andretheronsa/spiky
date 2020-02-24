@@ -12,11 +12,6 @@ Welcome to spiky's documentation!
 
    spiky
 
-TeacherAPI main
-===================
-.. automodule:: spiky
-   :members:
-
 Indices and tables
 ==================
 

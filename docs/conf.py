@@ -12,7 +12,7 @@
 #
 import os
 import sys
-sys.path.insert(0, 'C:\\Users\\andre\\OneDrive\\Code\\spiky\\spiky')
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'spiky'))
 
 
 # -- Project information -----------------------------------------------------
@@ -31,6 +31,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
+    'sphinx.ext.napoleon'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
