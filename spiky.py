@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 from argparse import ArgumentParser as arparse
-from glob import glob
 import geopandas as gpd
-from pathlib import Path
 import logging
-from shapely import geometry
+from pathlib import Path
 from pygc import great_distance as gd
+from shapely import geometry
+import sys
 
 
 '''
@@ -20,161 +20,166 @@ Requires: Python version 3.4+ for Pathlib
 
 def cmd_line_parse():
     '''Parse command line input and returns argument object'''
-
-    example = "example: python3 ./spiky.py /home/input/"
+    example = "example: python3 ./spiky.py /home/input/ -a 2"
     parser = arparse(description='Remove spikes from a GeoPackage polygons',
                      epilog=example)
-    parser.add_argument('indir',
+    parser.add_argument("filename",
+                        nargs='?',
                         type=str,
                         default='/home/work/',
                         help="Directory containing GeoPackage files")
-    parser.add_argument('-m',
-                        type=int,
-                        default=10,
+    parser.add_argument("-a",
+                        type=float,
+                        default=1.0,
                         help="Maximum angle of spikes (deg)")
-    parser.add_argument('-a',
-                        type=int,
-                        default=1,
-                        help="Max area change after spike removal (%)")
     args = parser.parse_args()
     return(args)
 
 
-def calculate_angle(a: geometry.point,
-                    b: geometry.point,
-                    c: geometry.point) -> float:
-    '''Calculate the absolute angle of point b towards point a and c
-        WGS84 Geographic coordinates required
+def calculate_angle(a: tuple,
+                    b: tuple,
+                    c: tuple) -> float:
+    '''Calculate the absolute angle of point b with regards to
+    neighbouring points a and c.  
+
+    Shapely points in WGS84 Geographic coordinates required.  
+
+    :param a: Neighbouring point a (xy tuple)  
+    :param b: Center point b (xy tuple)  
+    :param c: Neighbouring point c (xy tuple)  
+    :type a: tuple  
+    :type b: tuple  
+    :type c: tuple  
+    :return: Returns absolute angle  
+    :rtype: float  
+
     '''
-    # Calculate heading (reverse azimuth) between ab and cb
-    ab = gd(start_latitude=a.y,
-            start_longitude=a.x,
-            end_latitude=b.y,
-            end_longitude=b.x)['reverse_azimuth']
-    cb = gd(start_latitude=c.y,
-            start_longitude=c.x,
-            end_latitude=b.y,
-            end_longitude=b.x)['reverse_azimuth']
-    b_angle = abs(ab - cb)
+    heading_ab = gd(start_latitude=a[1],
+                    start_longitude=a[0],
+                    end_latitude=b[1],
+                    end_longitude=b[0])['reverse_azimuth']
+    heading_cb = gd(start_latitude=c[1],
+                    start_longitude=c[0],
+                    end_latitude=b[1],
+                    end_longitude=b[0])['reverse_azimuth']
+    b_angle = abs(heading_ab - heading_cb)
     return b_angle
 
 
-def despike(polygon: geometry.polygon,
-            min_angle: int) -> geometry.polygon:
-    '''Removes vertices from shapely polygon with neighbouring angles > max'''
+def despike_coords(coord_list: list,
+                   angle: float) -> list:
+    '''Removes spikes from a coord list.  
 
-    # Polygon always has a single exterior and can have multiple interior rings
-    coord_dict = {"exterior": [list(polygon.exterior.coords)]}
-    if len(list(polygon.interiors)) > 0:
-        coord_dict["interior"] = [i for i in list(polygon.interior.coords)]
+    Spikes are vertices with neighbouring angles < min.  
+    Coordinates can be line or ring.  
 
-    # Iterate over outer and inner ring(s)
-    for side in coord_dict.items():
-        for linear_ring in coord_dict[side]:
-            # Add 2nd last point to list's 0th index to find 1st angle
-            linear_ring.insert(0, linear_ring[-2])
+    :param coord_list: Input list of xy tuples to be despiked  
+    :param angle: Maximum angle that defines a spike (deg)  
+    :type coord_list: list  
+    :type angle: float  
+    :return: Returns despiked coord list 
+    :rtype: list  
 
-            # Create dict of xy: angles - middle angle is calculated
-            angles_dict = {}
-            for i in range(len(linear_ring)-2):
-                point_a = geometry.point.Point(linear_ring[i])
-                point_b = geometry.point.Point(linear_ring[i+1])
-                point_c = geometry.point.Point(linear_ring[i+2])
-                b_angle = calculate_angle(point_a, point_b, point_c)
-                angles_dict[point_b] = b_angle
-
-            # Remove vertices with angles < angle
-            for vertex, angle in angles_dict.items():
-                if angle < min_angle:
-                    angles_dict.pop(vertex)
-
-        # Rebuild polygon
-        new_poly = angle
-    return new_poly
-
-
-def optimize_angle(polygon: geometry.polygon,
-                   max_angle: int,
-                   max_area_delta: int) -> geometry.polygon:
-    '''Find spikes in a polygon.
-
-    Spikes are defined as a vertex forming a sharp angle
-    (up to specified max angle) with neighbouring vertices
-    and can be removed without significanbtly reducing the
-    polygon area.
     '''
+    # Check if coordlist is enclosing ring
+    if coord_list[0] == coord_list[-1]:
+        ring = True
+        # Pad initial point with end of ring
+        coord_list.insert(0, coord_list[-2])
 
-    angle = 0
-    while angle < max_angle:
-        orig_area = polygon.area
-        despiked_polygon = despike(polygon, angle)
-        new_area = despiked_polygon.area
-        area_delta = min(orig_area, new_area) / max(orig_area, new_area)
-        if area_delta > max_area_delta:
-            return polygon
+    # Create list without spikes
+    new_coord_list = []
+    for count in range(len(coord_list)-2):
+        point_a = coord_list[count]
+        point_b = coord_list[count+1]
+        point_c = coord_list[count+2]
+        b_angle = calculate_angle(point_a, point_b, point_c)
+        if b_angle > angle:
+            new_coord_list.append(point_b)
+
+    if ring:
+        # Ensure ring encloses again
+        new_coord_list.append(new_coord_list[0])
+    else:
+        # Put back first and last point if line
+        new_coord_list.insert(0, coord_list[0])
+        new_coord_list.insert(0, coord_list[0])
+    return new_coord_list
+
+
+def despike(shape: geometry, angle: float) -> geometry:
+    '''Removes spikes various shapely geometries using despike_coords().  
+
+    Currently supports only Polygon geometries.  
+    Line, MultiLine and Multipolygon should be possible.  
+
+    :param shape: Input shapely geometry  
+    :param angle: Maximum angle that defines a spike (deg)  
+    :type shape: geometry  
+    :type angle: float  
+    :return: Returns despiked shape  
+    :rtype: geometry  
+
+    '''
+    if shape.type == "Polygon":
+        # Polygons have coords for exterior and list for interior(s)
+        poly_dict = {"outer": [shape.exterior.coords]}
+        if len(list(shape.interiors)) > 0:
+            poly_dict["inner"] = [i.coords for i in shape.interiors]
+
+        # Despike all CoordinateSequence lists in obj and rebuild poly
+        new_poly_dict = {}
+        for side in poly_dict.keys():
+            new_coord_list = []
+            for coords in poly_dict[side]:
+                new_coords = despike_coords(list(coords), angle)
+                new_coord_list.append(new_coords)
+            new_poly_dict[side] = new_coord_list
+
+        if "inner" in poly_dict:
+            new_shape = geometry.Polygon(shell=new_poly_dict["outer"][0],
+                                         holes=new_poly_dict["inner"])
         else:
-            polygon = despiked_polygon
-            angle += 1
+            new_shape = geometry.Polygon(shell=new_poly_dict["outer"][0])
+
+    # elif shape.type == "MultiPolygon":
+    # elif shape.type == "line":
+    # elif shape.type == "MultiLine":
+    else:
+        logging.warning(f"{shape.type} cannot be despiked yet - ignore")
+        new_shape = shape
+    return new_shape
 
 
-def main(in_dir: str,
-         max_angle: int,
-         max_area_delta: int):
-    '''Main function
-    Handles file input and performs quality checks.
-    Finds all polygons from all GeoPackages.
-    Feeds polygons to the iterative despike subroutines.
-    Collects polygons and rebuilds geoseries and GeoPackages
-    Writes out de-spiked data.
+def main(filename: str, angle: float):
+    '''Main function that handles file input and performs quality checks.  
+    Finds all shapes within GeoPackage, despikes and save to GeoPackages.
     '''
+    package_path = Path(filename).absolute()
+    package_gdf = gpd.read_file(package_path)
+    crs = package_gdf.crs
 
-    # Read all valid GeoPackages in in_dir
-    package_list = glob(in_dir + "*.gpkg")
-    for package_file in package_list:
-        package_path = Path(package_file).absolute()
-        package_gdf = gpd.read_file(package_path)
+    # Check geopackage contents
+    if any(package_gdf.is_empty):
+        logging.warning(f"{package_path.name} geometry empty - skip")
+        sys.exit(1)
+    elif not any(package_gdf.is_valid):
+        logging.warning(f"{package_path.name} geometry invalid - skip")
+        sys.exit(1)
+    elif not crs.is_geographic:
+        logging.warning(f"{package_path.name} coordinates not geographic")
+        sys.exit(1)
+    elif crs.name != 'WGS 84':
+        logging.warning(f"{package_path.name} CRS not WGS84")
+        sys.exit(1)
 
-        # Check geopackage contents
-        if any(package_gdf.is_empty):
-            logging.warning(f"{package_file} contains empty geometries-skip")
-            continue
-        elif not any(package_gdf.is_valid):
-            logging.warning(f"{package_file} contains invalid geometries-skip")
-            continue
-
-        # Ensure gpkg is geographic coordinates - to use great circle formulae
-        projection = package_gdf.crs
-        if not projection.is_geographic:
-            logging.warning(f"{package_file} is not in geographic coordinates")
-            continue
-        elif projection.name != 'WGS 84':
-            logging.warning(f"{package_file} uses datum other than WGS84")
-            continue
-
-        # Process all polygons in geopackage
-        new_package_list = []
-        for polygon in package_gdf["geometry"]:
-
-            # Despike polygon exterior and interior - ignore points/lines
-            if type(polygon) == geometry.polygon.Polygon:
-                despiked_layer = optimize_angle(polygon,
-                                                max_angle,
-                                                max_area_delta)
-                new_package_list.append(despiked_layer)
-            else:
-                new_package_list(polygon)
-
-            # Rebuild geoseries
-
-        # Rebuild GeoPackage - project back and save
-        despiked_gdf = new_package_list
-        despiked_gdf_proj = despiked_gdf.poject(projection)
-        despiked_gdf_proj.tofile(package_path.with_suffix("_despike.gpkg"),
-                                 driver="GPKG")
+    # Despike gemotery column of geodataframe in place
+    package_gdf["geometry"] = package_gdf["geometry"].apply(lambda s:
+                                                            despike(s, angle))
+    outfile = package_path.parent / (package_path.stem + "_ds.gpkg")
+    package_gdf.to_file(outfile, driver="GPKG")
 
 
 if __name__ == "__main__":
     args = cmd_line_parse()
-    main(in_dir=args.in_dir,
-         max_angle=args.m,
-         max_area_delta=args.a)
+    main(filename=args.filename, angle=args.a)
