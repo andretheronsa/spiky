@@ -44,7 +44,7 @@ docker pull andretheronsa/spiky:latest
 ```
 2. Run program and mount directory with file as a volume to /home/work/:  
 ```shell
-docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
+docker run -v /home/user/input/:/home/work/ andretheronsa/spiky:latest spiky-polygons.gpkg
 ```
 3. Outputs will be written to the same folder with '_ds' appended. 
 
