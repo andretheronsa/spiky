@@ -80,6 +80,9 @@ python3 spiky.py /home/user/spiky-polygon.gpkg -a 1
 ## Tests
 
 Testing is done with Pytest and automated during master deploy using Github actions:
+```shell
+pytest
+```
 
 ### TODO
 
