@@ -9,6 +9,7 @@ Args:
 
 Kwargs:
     -a, --angle: Maximum angle of spikes (degrees)
+    -v, --verbose: Print debug log messages
 
 Output:
     Geopackage in folder of inputfile with '_ds' suffix: {inputfile}_ds.gpkg
@@ -17,22 +18,34 @@ Example:
     $ spiky.py spiky-polygon.gpkg -a 1
 '''
 
-from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, Namespace
 import logging
 from pathlib import Path
 
 import geopandas as gpd
 from pygc import great_distance as gd
 from shapely import geometry
-
-# Configure logger - currently only prints to console
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
-                    level=logging.INFO,
-                    datefmt='%Y-%m-%d %H:%M:%S')
+import sys
 
 
-def cmd_line_parse():
-    '''Parses command line input and returns argument object'''
+def conf_logger(verbose: bool):
+    ''''Configure Spiky's logging level'''
+    if verbose:
+        level = logging.DEBUG
+    else:
+        level = logging.WARNING
+    logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                        level=level,
+                        datefmt='%Y-%m-%d %H:%M:%S')
+
+
+def cmd_line_parse(args) -> Namespace:
+    '''Parses command line input and returns argument object
+
+    Returns:
+        args
+
+    '''
     example = "example: ./spiky.py spiky-polygon.gpkg -a 0.5"
     parser = ArgumentParser(description='Remove spikes from GeoPackage.',
                             epilog=example,
@@ -46,8 +59,11 @@ def cmd_line_parse():
                         type=float,
                         default=1.0,
                         help="Maximum angle of spikes (degrees)")
-    args = parser.parse_args()
-    return(args)
+    parser.add_argument("-v",
+                        "--verbose",
+                        action='store_true',
+                        help="Print all log messages")
+    return parser.parse_args(args)
 
 
 def calculate_angle(a: tuple,
@@ -80,7 +96,7 @@ def calculate_angle(a: tuple,
 
 
 def despike_coords(coord_list: list,
-                   angle: float) -> list:
+                   angle: float = 1) -> list:
     '''Removes spikes from a coord list.
 
     Spikes are vertices with neighbouring angles < min.
@@ -94,11 +110,17 @@ def despike_coords(coord_list: list,
         Despiked coord list.
 
     '''
-    # Check if coordlist is enclosing ring - Pad initial point with end
-    if coord_list[0] == coord_list[-1]:
-        coord_list.insert(0, coord_list[-2])
+    # Check if coordlist is ring - Pad initial point with end
+    if len(coord_list) <= 2:
+        logging.debug("Coordlist contains only two points - can't despike")
+        return coord_list
+    elif coord_list[0] == coord_list[-1]:
         ring = True
-        logging.debug(f"Coordlist is ring")
+        coord_list.insert(0, coord_list[-2])
+        logging.debug("Coordlist is ring")
+    else:
+        ring = False
+        logging.debug("Coordlist is line")
 
     # Create list without spikes
     new_coord_list = []
@@ -117,11 +139,11 @@ def despike_coords(coord_list: list,
         new_coord_list.append(new_coord_list[0])
     else:
         new_coord_list.insert(0, coord_list[0])
-        new_coord_list.insert(0, coord_list[0])
+        new_coord_list.append(coord_list[-1])
     return new_coord_list
 
 
-def despike(shape: geometry, angle: float) -> geometry:
+def despike_shape(shape: geometry, angle: float = 1) -> geometry:
     '''Removes spikes from various shapely geometries.
 
     Deconstructs shape's CoordSequences into lists,
@@ -170,41 +192,56 @@ def despike(shape: geometry, angle: float) -> geometry:
     return new_shape
 
 
-def main(inputfile: Path, angle: float):
-    '''Despikes all shapes in a GeoPackage.
+def verify_gdf(package_gdf: gpd.GeoDataFrame, name: str = "File") -> bool:
+    '''Verifies GeoPandas GeoDataframe validity.
 
-    Handles file i/o, quality checks and despikes.
+    Args:
+        shape: Input geopandas geodataframe.
+
+    Returns:
+        bool: True if file is valid.
+
+    Raises:
+        ValueError: If GeoPackage file is not valid for Spiky.
+
+    '''
+
+    crs = package_gdf.crs
+    # Check geopackage contents
+    if any(package_gdf.is_empty):
+        raise ValueError(f"{name} contains empty geometry.")
+    elif not any(package_gdf.is_valid):
+        raise ValueError(f"{name} contains invalid geometry.")
+    elif not crs.is_geographic:
+        raise ValueError(f"{name} CRS not geographic.")
+    elif crs.name != 'WGS 84':
+        raise ValueError(f"{name} CRS not WGS84.")
+    else:
+        logging.info(f"{name} is valid")
+        return True
+
+
+def main(inputfile: Path, angle: float = 1):
+    '''Main function to despike all shapes in a GeoPackage.
 
     Args:
         inputfile: Input GeoPackage file (path or file in cwd)
         angle: Maximum angle of spikes (degrees).
 
-    Raises:
-        ValueError: If GeoPackage file contains invalid shapes.
-
     '''
     package_gdf = gpd.read_file(inputfile)
-    crs = package_gdf.crs
-
-    # Check geopackage contents
-    if any(package_gdf.is_empty):
-        raise ValueError("GeoPackage contains empty geometry.")
-    elif not any(package_gdf.is_valid):
-        raise ValueError("GeoPackage contains invalid geometry.")
-    elif not crs.is_geographic:
-        raise ValueError("GeoPackage CRS not geographic.")
-    elif crs.name != 'WGS 84':
-        raise ValueError("GeoPackage CRS not WGS84.")
-
-    # Despike geometry column of geodataframe in place
+    verify_gdf(package_gdf, inputfile.name)
     logging.info(f"Despike with max angle: {angle} - infile: {inputfile.name}")
-    package_gdf["geometry"] = package_gdf["geometry"].apply(lambda s:
-                                                            despike(s, angle))
+    package_gdf["geometry"] = package_gdf["geometry"].apply(
+        lambda s: despike_shape(s, angle))
     outfile = inputfile.parent / (inputfile.stem + "_ds.gpkg")
+    verify_gdf(package_gdf, outfile.name)
     package_gdf.to_file(outfile, driver="GPKG")
     logging.info(f"Despike complete - outfile: {outfile.name}")
+    return package_gdf
 
 
 if __name__ == "__main__":
-    args = cmd_line_parse()
+    args = cmd_line_parse(sys.argv[1:])
+    conf_logger(args.verbose)
     main(inputfile=args.inputfile, angle=args.angle)
