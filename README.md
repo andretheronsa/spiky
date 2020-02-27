@@ -24,9 +24,9 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 * Optionally accepts a max spike angle parameter (-a: float)  
 * Despikes all shapes in the GeoPackage  
 * Writes out new file(s) (*_ds.gpkg) to same folder as input  
-* Spiky functions can also be be imported if analysis on deconstructed GeoPackage is required 
+* Spiky functions can also be be imported if analysis on GeoPackage components is required 
 
-![alt text](Isolated.png "Title")
+![Spiky diagram](Work-diagram.svg "Spiky diagram")
 
 ### Limitations
 * Does not consider geometries with dimensions higher than 2d (z, m)  
