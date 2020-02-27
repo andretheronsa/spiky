@@ -53,7 +53,8 @@ docker run -v /home/user/input/:/home/work/ spiky:latest spiky-polygons.gpkg
 Alternatively the tool can be downloaded and run with Python (3.5+).  
 Required modules should be installed with pip.  
 It is highly recommended to use Python Virtual environments (or similar tool) to avoid conflicts.  
-Pip install on Windows will fail due to missing wheels for Geopandas dependencies - [alternative](https://geopandas.org/install.html).  
+Pip install on Windows will fail due to missing Geopandas dependencies - [instructions](https://geopandas.org/install.html).  
+Wheels for GDAL, Fiona, Shapely, Pyproj, Rtree can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/)
 
 1. Pull code from git:
 ```shell

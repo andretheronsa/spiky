@@ -1,6 +1,12 @@
 __pycache__/
+docs/
+tests/
 venv/
+.github
 .gitignore
 .vscode
 .pytest_cache
 .github
+.readthedocs.yml
+LICENCE
+README.md
