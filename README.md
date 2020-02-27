@@ -7,6 +7,8 @@
 
 Spiky removes spikes from GeoPackage shapes
 
+![Despike example](example_despike.png "Despike example")
+
 ## Overview
 
 Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/latest/?)
