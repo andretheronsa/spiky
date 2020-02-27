@@ -48,7 +48,7 @@ docker run -v /home/user/input/:/home/work/ andretheronsa/spiky:latest spiky-pol
 ```
 3. Outputs will be written to the same folder with '_ds' appended. 
 
-### Local Python environment
+### Local Python environment + script
 
 Alternatively the tool can be downloaded and run with Python (3.5+).  
 Required modules should be installed with pip.  
@@ -67,7 +67,7 @@ python -m venv venv
 ./venv/Scripts/active
 
 ```
-4. Install packages:
+4. Install dependencies:
 ```shell
 python3 -m pip install -r requirements.txt
 ```
@@ -77,13 +77,17 @@ python3 spiky.py /home/user/spiky-polygon.gpkg -a 1
 ```
 6. Outputs will be written to the same folder with '_ds' appended.
 
+### Python 
+
 ## Tests
 
 Testing is done with Pytest and automated during master deploy using Github actions:
+Test spiky and despiked dataset can be found in /tests/fixtures
 
 ### TODO
 
 * Enable Line, MultiLine, or MultiPolygon geometries
+* Enable pip setuptools install
 
 ## Author
 

@@ -74,5 +74,5 @@ def test_verify_gdf(complex_spiked_gdf):
 def test_despike_gdf_complex_spiked_polygon(complex_despiked_gdf):
     spiked_data = spiky.Path("./tests/fixtures/inner-spiky-polygons.gpkg")
     package_gdf = spiky.gpd.read_file(spiked_data)
-    despiked = spiky.despike_gdf(spiked_data)
+    despiked = spiky.despike_gdf(package_gdf)
     assert complex_despiked_gdf.equals(despiked)

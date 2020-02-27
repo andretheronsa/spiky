@@ -96,7 +96,7 @@ def calculate_angle(a: tuple,
 
 
 def despike_list(coord_list: list,
-                   angle: float = 1) -> list:
+                 angle: float = 1) -> list:
     '''Removes spikes from a coord list.
 
     Spikes are vertices with neighbouring angles < min.
@@ -110,7 +110,7 @@ def despike_list(coord_list: list,
         Despiked coord list.
 
     '''
-    # Check if coordlist is ring - Pad initial point with end
+    # Check if coordlist is point/list/ring - Pad initial point with end
     if len(coord_list) <= 2:
         logging.debug("Coordlist contains only two points - can't despike")
         return coord_list
@@ -191,22 +191,26 @@ def despike_shape(shape: geometry, angle: float = 1) -> geometry:
         new_shape = shape
     return new_shape
 
-def despike_gdf(package_gdf: gpd.GeoDataFrame, 
-         angle: float = 1,
-         verbose: bool = False):
+
+def despike_gdf(package_gdf: gpd.GeoDataFrame,
+                angle: float = 1,
+                verbose: bool = False) -> gpd.GeoDataFrame:
     '''Despikes all shapes in a GeoDataFrame.
 
     Args:
         package_gdf: Input GeoPackage object
         angle: Maximum angle of spikes (degrees).
 
+    Returns:
+        Despiked GeoPackage object
+
     '''
-    conf_logger(args.verbose)
+    conf_logger(verbose)
     verify_gdf(package_gdf, package_gdf.name)
     logging.info(f"Despike with max angle: {angle}")
     package_gdf["geometry"] = package_gdf["geometry"].apply(
         lambda s: despike_shape(s, angle))
-    verify_gdf(package_gdf, outfile.name)
+    verify_gdf(package_gdf, package_gdf.name + "_ds")
     logging.info(f"Despike complete")
     return package_gdf
 
@@ -215,17 +219,16 @@ def verify_gdf(package_gdf: gpd.GeoDataFrame, name: str = "File") -> bool:
     '''Verifies GeoPandas GeoDataframe validity.
 
     Args:
-        shape: Input geopandas geodataframe.
+        shape: Input geopandas GeoDataframe.
 
     Returns:
         bool: True if file is valid.
 
     Raises:
-        ValueError: If GeoPackage file is not valid for Spiky.
+        ValueError: If GeoDataframe file is not valid for Spiky.
 
     '''
     crs = package_gdf.crs
-    # Check geopackage contents
     if any(package_gdf.is_empty):
         raise ValueError(f"{name} contains empty geometry.")
     elif not any(package_gdf.is_valid):
