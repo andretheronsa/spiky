@@ -1,5 +1,5 @@
 [![Build](https://images.microbadger.com/badges/version/andretheronsa/spiky.svg)](https://microbadger.com/images/andretheronsa/spiky)
-![Docs](https://readthedocs.org/projects/docs/badge/?version=latest)
+[![Documentation Status](https://readthedocs.org/projects/spiky/badge/?version=latest)](https://spiky.readthedocs.io/en/latest/?badge=latest)
 ![Tests](https://github.com/andretheronsa/spiky/workflows/Python%20package/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/689f88a473764cd888550434c908644a)](https://app.codacy.com/manual/andretheronsa/spiky?utm_source=github.com&utm_medium=referral&utm_content=andretheronsa/spiky&utm_campaign=Badge_Grade_Dashboard)
 
