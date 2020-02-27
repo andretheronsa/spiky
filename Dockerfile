@@ -1,10 +1,10 @@
-FROM python:3.7-slim
+FROM python:3.7-alpine
 
 LABEL \
     "Author"="Andre Theron" \
     "Email"="andretheronsa@gmail.com"
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt /
 RUN python3 -m pip install -r requirements.txt && \
     rm requirements.txt
 
