@@ -50,7 +50,7 @@ docker pull andretheronsa/spiky:latest
 ```shell
 docker run -v /home/user/input/:/home/work/ andretheronsa/spiky:latest spiky-polygons.gpkg
 ```
-3. Outputs will be written to the same folder with '_ds' appended.  
+3. Outputs will be written to the same folder with '_ds' appended  
 
 ### Local Python environment + script
 
