@@ -25,21 +25,21 @@ def test_calculate_angle_same_neighbour_angle_zero():
     assert angle == 0.0
 
 
-def test_despike_coords_close_ring():
+def test_despike_list_close_ring():
     ring = [(33.1, 29), (32.4, 29), (32.4, 24), (33.1, 24), (33.1, 29)]
-    despike_ring = spiky.despike_coords(ring)
+    despike_ring = spiky.despike_list(ring)
     assert despike_ring[0] == despike_ring[-1]
 
 
-def test_despike_coords_pad_line():
+def test_despike_list_pad_line():
     line = [(33.1, 29), (32.1, 28), (32.1, 27), (32.1, 26)]
-    despike_line = spiky.despike_coords(line)
+    despike_line = spiky.despike_list(line)
     assert line == despike_line
 
 
-def test_despike_coords_point_ignore():
+def test_despike_list_point_ignore():
     line = [(33.1, 29)]
-    despike_line = spiky.despike_coords(line)
+    despike_line = spiky.despike_list(line)
     assert line == despike_line
 
 
@@ -73,5 +73,6 @@ def test_verify_gdf(complex_spiked_gdf):
 
 def test_main_complex_spiked_polygon(complex_despiked_gdf):
     spiked_data = spiky.Path("./tests/fixtures/inner-spiky-polygons.gpkg")
-    despiked = spiky.main(spiked_data)
+    package_gdf = spiky.gpd.read_file(spiked_data)
+    despiked = spiky.despike_gdf(spiked_data)
     assert complex_despiked_gdf.equals(despiked)

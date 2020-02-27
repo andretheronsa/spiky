@@ -95,7 +95,7 @@ def calculate_angle(a: tuple,
     return b_angle
 
 
-def despike_coords(coord_list: list,
+def despike_list(coord_list: list,
                    angle: float = 1) -> list:
     '''Removes spikes from a coord list.
 
@@ -173,7 +173,7 @@ def despike_shape(shape: geometry, angle: float = 1) -> geometry:
         for side in poly_dict.keys():
             new_coord_list = []
             for coords in poly_dict[side]:
-                new_coords = despike_coords(list(coords), angle)
+                new_coords = despike_list(list(coords), angle)
                 new_coord_list.append(new_coords)
             new_poly_dict[side] = new_coord_list
 
@@ -191,6 +191,25 @@ def despike_shape(shape: geometry, angle: float = 1) -> geometry:
         new_shape = shape
     return new_shape
 
+def despike_gdf(package_gdf: gpd.GeoDataFrame, 
+         angle: float = 1,
+         verbose: bool = False):
+    '''Despikes all shapes in a GeoDataFrame.
+
+    Args:
+        package_gdf: Input GeoPackage object
+        angle: Maximum angle of spikes (degrees).
+
+    '''
+    conf_logger(args.verbose)
+    verify_gdf(package_gdf, package_gdf.name)
+    logging.info(f"Despike with max angle: {angle}")
+    package_gdf["geometry"] = package_gdf["geometry"].apply(
+        lambda s: despike_shape(s, angle))
+    verify_gdf(package_gdf, outfile.name)
+    logging.info(f"Despike complete")
+    return package_gdf
+
 
 def verify_gdf(package_gdf: gpd.GeoDataFrame, name: str = "File") -> bool:
     '''Verifies GeoPandas GeoDataframe validity.
@@ -205,7 +224,6 @@ def verify_gdf(package_gdf: gpd.GeoDataFrame, name: str = "File") -> bool:
         ValueError: If GeoPackage file is not valid for Spiky.
 
     '''
-
     crs = package_gdf.crs
     # Check geopackage contents
     if any(package_gdf.is_empty):
@@ -221,27 +239,11 @@ def verify_gdf(package_gdf: gpd.GeoDataFrame, name: str = "File") -> bool:
         return True
 
 
-def main(inputfile: Path, angle: float = 1):
-    '''Main function to despike all shapes in a GeoPackage.
-
-    Args:
-        inputfile: Input GeoPackage file (path or file in cwd)
-        angle: Maximum angle of spikes (degrees).
-
-    '''
-    package_gdf = gpd.read_file(inputfile)
-    verify_gdf(package_gdf, inputfile.name)
-    logging.info(f"Despike with max angle: {angle} - infile: {inputfile.name}")
-    package_gdf["geometry"] = package_gdf["geometry"].apply(
-        lambda s: despike_shape(s, angle))
-    outfile = inputfile.parent / (inputfile.stem + "_ds.gpkg")
-    verify_gdf(package_gdf, outfile.name)
-    package_gdf.to_file(outfile, driver="GPKG")
-    logging.info(f"Despike complete - outfile: {outfile.name}")
-    return package_gdf
-
-
 if __name__ == "__main__":
     args = cmd_line_parse(sys.argv[1:])
-    conf_logger(args.verbose)
-    main(inputfile=args.inputfile, angle=args.angle)
+    package_gdf = gpd.read_file(args.inputfile)
+    despiked = despike_gdf(package_gdf=package_gdf,
+                           angle=args.angle,
+                           verbose=args.verbose)
+    outfile = args.inputfile.parent / (args.inputfile.stem + "_ds.gpkg")
+    package_gdf.to_file(outfile, driver="GPKG")
