@@ -1,12 +1,11 @@
-FROM python:3.7-alpine
+FROM python:3.7-slim
 
 LABEL \
     "Author"="Andre Theron" \
     "Email"="andretheronsa@gmail.com"
 
 COPY requirements.txt /
-RUN python3 -m pip install -r requirements.txt && \
-    rm requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
 COPY ./spiky/ /home/spiky/
 RUN mkdir /home/work
