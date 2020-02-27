@@ -22,11 +22,11 @@ Latest docs are available at: [Readthedocs](https://spiky.readthedocs.io/en/late
 ### Operation
 * Accepts a positional argument for filename  
 * Optionally accepts a max spike angle parameter (-a: float)  
-* Despikes all shapes in the GeoPackage  
-* Writes out new file(s) (*_ds.gpkg) to same folder as input  
+* Removes spikes for all shapes in the GeoPackage  
+* Writes out new file (*_ds.gpkg) to same folder as input  
 * Spiky functions can also be be imported if analysis on GeoPackage components is required 
 
-![Spiky diagram](Work-diagram.svg "Spiky diagram")
+![Spiky diagram](spiky-diagram.svg "Spiky diagram")
 
 ### Limitations
 * Does not consider geometries with dimensions higher than 2d (z, m)  
